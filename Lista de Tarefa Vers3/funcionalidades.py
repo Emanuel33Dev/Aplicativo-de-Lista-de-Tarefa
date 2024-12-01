@@ -74,15 +74,36 @@ def excluir_tarefa(tarefa_obj, tarefas, atualizar_lista, lista_tarefas):
 
 
 # Função para editar tarefa
-def editar_tarefa(tarefa_obj, tarefas, atualizar_lista, lista_tarefas):
-    novo_titulo = Querybox.get_string("Editar Tarefa", "Digite o novo título:", initialvalue=tarefa_obj['tarefa'])
-    if novo_titulo:
-        nova_data = Querybox.get_string("Editar Data", "Digite a nova data:", initialvalue=tarefa_obj['data_criacao'])
-        if nova_data:
-            tarefa_obj['tarefa'] = novo_titulo
-            tarefa_obj['data_criacao'] = nova_data
-            salvar_tarefas(tarefas)
-            atualizar_lista(lista_tarefas, tarefas)
+def editar_tarefa(tarefa_obj, tarefas, atualizar_lista, lista_tarefas, entrada_tarefa, entrada_data, botao_adicionar):
+    # Carregar a tarefa nos campos de entrada
+    entrada_tarefa.delete(0, 'end')
+    entrada_data.delete(0, 'end')
+
+    entrada_tarefa.insert(0, tarefa_obj['tarefa'])
+    entrada_data.insert(0, tarefa_obj['data_criacao'])
+
+    # Alterar o comportamento do botão "Criar Tarefa" para "Salvar Alterações"
+    botao_adicionar.config(
+        text='Salvar Alterações',
+        bootstyle="success",
+        command=lambda: salvar_alteracoes(tarefa_obj, tarefas, lista_tarefas, botao_adicionar, entrada_tarefa,
+                                          entrada_data)
+    )
+
+
+# Função para salvar as alterações feitas na tarefa
+def salvar_alteracoes(tarefa_obj, tarefas, lista_tarefas, botao_adicionar, entrada_tarefa, entrada_data):
+    tarefa_obj['tarefa'] = entrada_tarefa.get()
+    tarefa_obj['data_criacao'] = entrada_data.get()
+    salvar_tarefas(tarefas)
+    atualizar_lista_tarefas(lista_tarefas, tarefas)
+
+    # Reverter o botão "Salvar Alterações" para "Criar Tarefa"
+    botao_adicionar.config(
+        text='Criar Tarefa',
+        bootstyle="success",
+        command=lambda: adicionar_tarefa(lista_tarefas, entrada_tarefa, entrada_data, tarefas)
+    )
 
 
 # Função para atualizar lista de tarefas
@@ -101,9 +122,12 @@ def atualizar_lista_tarefas(lista_tarefas, tarefas):
         btn_frame.pack(anchor='e', pady=5)
 
         ttkb.Button(btn_frame, text='Editar', bootstyle="success",
-                    command=lambda t=tarefa: editar_tarefa(t, tarefas, atualizar_lista_tarefas, lista_tarefas)).pack(side='left', padx=5)
+                    command=lambda t=tarefa: editar_tarefa(t, tarefas, atualizar_lista_tarefas, lista_tarefas,
+                                                           entrada_tarefa, entrada_data, botao_adicionar)).pack(
+            side='left', padx=5)
         ttkb.Button(btn_frame, text='Excluir', bootstyle="danger",
-                    command=lambda t=tarefa: excluir_tarefa(t, tarefas, atualizar_lista_tarefas, lista_tarefas)).pack(side='right', padx=5)
+                    command=lambda t=tarefa: excluir_tarefa(t, tarefas, atualizar_lista_tarefas, lista_tarefas)).pack(
+            side='right', padx=5)
 
 
 # Inicialização do banco de dados

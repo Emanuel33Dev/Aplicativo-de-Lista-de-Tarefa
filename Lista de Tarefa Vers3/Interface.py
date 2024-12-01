@@ -117,8 +117,35 @@ def main():
 
     # Função de editar tarefa
     def editar_tarefa(tarefa):
-        # Implemente a lógica de edição
-        print(f"Editar tarefa: {tarefa['tarefa']}")
+        # Carregar a tarefa nos campos de entrada
+        entrada_tarefa.delete(0, 'end')
+        entrada_data.delete(0, 'end')
+
+        entrada_tarefa.insert(0, tarefa['tarefa'])
+        entrada_data.insert(0, tarefa['data_criacao'])
+
+        # Alterar o comportamento do botão "Criar Tarefa" para "Salvar Alterações"
+        botao_adicionar.config(
+            text='Salvar Alterações',
+            bootstyle=SUCCESS,
+            command=lambda: salvar_alteracoes(tarefa)
+        )
+
+    def salvar_alteracoes(tarefa):
+        # Atualizar os dados da tarefa com os novos valores dos campos de entrada
+        tarefa['tarefa'] = entrada_tarefa.get()
+        tarefa['data_criacao'] = entrada_data.get()
+
+        # Salvar as alterações nas tarefas e atualizar a lista
+        salvar_tarefas(tarefas)
+        atualizar_lista_tarefas_com_rolagem(lista_tarefas, tarefas)
+
+        # Reverter o botão "Salvar Alterações" para "Criar Tarefa"
+        botao_adicionar.config(
+            text='Criar Tarefa',
+            bootstyle=SUCCESS,
+            command=lambda: adicionar_e_atualizar()
+        )
 
     # Função de excluir tarefa
     def excluir_tarefa(tarefa):
