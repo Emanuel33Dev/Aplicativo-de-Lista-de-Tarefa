@@ -95,7 +95,7 @@ def main():
             titulo_tarefa = ttkb.Label(tarefa_frame, text=tarefa['tarefa'], font=('Arial', 12, 'bold'))
             titulo_tarefa.pack(side='top', padx=10, pady=5)
 
-            descricao_tarefa = ttkb.Label(tarefa_frame, text=f"Data: {tarefa['data_criacao']}", font=('Arial', 10))
+            descricao_tarefa = ttkb.Label(tarefa_frame, text=f"{tarefa['data_criacao']}", font=('Arial', 10))
             descricao_tarefa.pack(side='top', anchor='w', padx=10, pady=5)
 
             # Botões de Editar e Excluir
